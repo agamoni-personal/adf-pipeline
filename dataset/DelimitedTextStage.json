@@ -12,8 +12,7 @@
 				"type": "AzureBlobStorageLocation",
 				"container": "destination-container"
 			},
-			"columnDelimiter": "",
-			"rowDelimiter": "",
+			"columnDelimiter": ",",
 			"escapeChar": "",
 			"quoteChar": ""
 		},
