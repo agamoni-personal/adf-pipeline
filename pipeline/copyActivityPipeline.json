@@ -20,7 +20,9 @@
 						"type": "ExcelSource",
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
-							"fileListPath": "stage-container"
+							"recursive": true,
+							"wildcardFolderPath": "Resume",
+							"wildcardFileName": "*"
 						}
 					},
 					"sink": {
