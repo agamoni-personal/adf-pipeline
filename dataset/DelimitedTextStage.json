@@ -13,7 +13,7 @@
 				"folderPath": "Resume",
 				"container": "stage-container"
 			},
-			"columnDelimiter": "",
+			"columnDelimiter": ",",
 			"escapeChar": "\\",
 			"quoteChar": "\""
 		},
