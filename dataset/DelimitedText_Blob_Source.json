@@ -1,5 +1,5 @@
 {
-	"name": "DelimitedTextSource",
+	"name": "DelimitedText_Blob_Source",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorageStage",
@@ -10,7 +10,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": "Resume",
 				"container": "stage-container"
 			},
 			"columnDelimiter": ",",

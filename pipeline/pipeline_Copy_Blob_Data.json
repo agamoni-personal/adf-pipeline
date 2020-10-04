@@ -1,9 +1,9 @@
 {
-	"name": "pipelineChangeSourceType",
+	"name": "pipeline_Copy_Blob_Data",
 	"properties": {
 		"activities": [
 			{
-				"name": "copyActivityV1",
+				"name": "copyActivity_Blob_Data",
 				"description": "This is copy activity to change source dataset type",
 				"type": "Copy",
 				"dependsOn": [],
@@ -21,7 +21,6 @@
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
 							"recursive": true,
-							"wildcardFolderPath": "Resume",
 							"wildcardFileName": "*"
 						},
 						"formatSettings": {
@@ -52,7 +51,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DelimitedTextSource",
+						"referenceName": "DelimitedText_Blob_Source",
 						"type": "DatasetReference"
 					}
 				],
