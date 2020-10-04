@@ -1,0 +1,22 @@
+{
+	"name": "DelimitedTextSource",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageStage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "Resume",
+				"container": "stage-container"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
