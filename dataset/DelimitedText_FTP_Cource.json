@@ -1,0 +1,22 @@
+{
+	"name": "DelimitedText_FTP_Cource",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "FtpServer_Linked_Service",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "FtpServerLocation",
+				"fileName": "A_Kaya_Resume.pdf",
+				"folderPath": "resume"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
