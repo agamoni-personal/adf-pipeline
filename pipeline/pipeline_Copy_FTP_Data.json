@@ -1,6 +1,7 @@
 {
-	"name": "pipeline1",
+	"name": "pipeline_Copy_FTP_Data",
 	"properties": {
+		"description": "This is a pipeline to copy data from ftp folder",
 		"activities": [
 			{
 				"name": "Copy data from FTP",
