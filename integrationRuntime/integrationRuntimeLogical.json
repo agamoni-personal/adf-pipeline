@@ -1,0 +1,12 @@
+{
+	"name": "integrationRuntimeLogical",
+	"properties": {
+		"type": "SelfHosted",
+		"typeProperties": {
+			"linkedInfo": {
+				"resourceId": "/subscriptions/2f74b086-1adb-4bdf-ab0d-c693816302a/resourcegroups/azure-data-factory-demo/providers/Microsoft.DataFactory/factories/pipelineSetupV1/integrationruntimes/integrationRuntime-ftp",
+				"authorizationType": "Rbac"
+			}
+		}
+	}
+}
