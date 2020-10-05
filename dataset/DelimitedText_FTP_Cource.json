@@ -10,8 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "FtpServerLocation",
-				"fileName": "A_Kaya_Resume.pdf",
-				"folderPath": "resume"
+				"folderPath": "resume_old"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
