@@ -21,6 +21,7 @@
 						"storeSettings": {
 							"type": "FtpReadSettings",
 							"recursive": true,
+							"wildcardFileName": "*",
 							"useBinaryTransfer": true
 						},
 						"formatSettings": {
