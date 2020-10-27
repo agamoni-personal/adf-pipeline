@@ -10,7 +10,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": "resume_old",
+				"fileName": "dummy.json",
+				"folderPath": "api_data",
 				"container": "destination-container"
 			},
 			"columnDelimiter": ",",
