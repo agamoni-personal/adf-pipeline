@@ -5,17 +5,27 @@
 			"referenceName": "AzureBlobStorageStage",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"api_pipeline_folder": {
+				"type": "string",
+				"defaultValue": "api_data_folder"
+			},
+			"api_pipeline_filename": {
+				"type": "string",
+				"defaultValue": "dummy.json"
+			}
+		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": {
-					"value": "@pipeline().parameters.api_pipeline_filename",
+					"value": "@dataset().api_pipeline_filename",
 					"type": "Expression"
 				},
 				"folderPath": {
-					"value": "@pipeline().parameters.api_pipeline_folder",
+					"value": "@dataset().api_pipeline_folder",
 					"type": "Expression"
 				},
 				"container": "destination-container"
