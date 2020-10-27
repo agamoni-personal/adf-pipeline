@@ -1,0 +1,26 @@
+{
+	"name": "API_Data_Sink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageStage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@pipeline().parameters.api_pipeline_filename",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@pipeline().parameters.api_pipeline_folder",
+					"type": "Expression"
+				},
+				"container": "destination-container"
+			}
+		},
+		"schema": {}
+	}
+}
