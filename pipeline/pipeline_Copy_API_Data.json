@@ -42,7 +42,11 @@
 				"outputs": [
 					{
 						"referenceName": "API_Data_Sink",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"api_pipeline_folder": "api_data_folder",
+							"api_pipeline_filename": "dummy.json"
+						}
 					}
 				]
 			}
