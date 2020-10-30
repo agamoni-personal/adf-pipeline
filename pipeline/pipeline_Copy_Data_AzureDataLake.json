@@ -117,7 +117,7 @@
 				"typeProperties": {
 					"variableName": "activityMetadata",
 					"value": {
-						"value": "@activity('Get Metadata Azure DataLake Gen2').output",
+						"value": "@activity('Get Metadata Azure DataLake Gen2').output.toString()",
 						"type": "Expression"
 					}
 				}
