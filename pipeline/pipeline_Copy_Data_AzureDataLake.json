@@ -101,8 +101,34 @@
 						"type": "DelimitedTextReadSettings"
 					}
 				}
+			},
+			{
+				"name": "Set Metadata Variable",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata Azure DataLake Gen2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "activityMetadata",
+					"value": {
+						"value": "@activity('Get Metadata Azure DataLake Gen2').output",
+						"type": "Expression"
+					}
+				}
 			}
 		],
+		"variables": {
+			"activityMetadata": {
+				"type": "String",
+				"defaultValue": "\"\""
+			}
+		},
 		"annotations": []
 	}
 }
