@@ -101,6 +101,13 @@
 						"type": "DelimitedTextReadSettings"
 					}
 				}
+			},
+			{
+				"name": "If Condition AzureDataLake",
+				"description": "This is a  conditional data flow based on different conditions.",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": []
 			}
 		],
 		"variables": {
