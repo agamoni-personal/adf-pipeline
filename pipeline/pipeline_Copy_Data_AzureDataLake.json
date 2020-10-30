@@ -60,6 +60,42 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "Get Metadata Azure DataLake Gen2",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "Copy data into Azure DataLake Gen2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DelimitedText_AzureDataLake_Sink",
+						"type": "DatasetReference",
+						"parameters": {
+							"sinkFolderPath": "stage_data_ADLGen2"
+						}
+					},
+					"fieldList": [],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings"
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
 			}
 		],
 		"annotations": []
