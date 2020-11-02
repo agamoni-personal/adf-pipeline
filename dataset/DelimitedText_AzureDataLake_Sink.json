@@ -16,6 +16,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": "microsoft-certified-azure-data-engineer-associate-skills-measured.pdf",
 				"folderPath": {
 					"value": "@dataset().sinkFolderPath",
 					"type": "Expression"
