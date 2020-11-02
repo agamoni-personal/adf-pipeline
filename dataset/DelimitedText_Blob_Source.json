@@ -10,6 +10,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": "microsoft-certified-azure-data-engineer-associate-skills-measured.pdf",
+				"folderPath": "Azure-Certificates",
 				"container": "stage-container"
 			},
 			"columnDelimiter": ",",
