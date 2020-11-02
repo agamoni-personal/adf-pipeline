@@ -57,7 +57,10 @@
 				"outputs": [
 					{
 						"referenceName": "DelimitedText_AzureDataLake_Sink",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"sinkFolderPath": "stage_data_ADLGen2"
+						}
 					}
 				]
 			},
