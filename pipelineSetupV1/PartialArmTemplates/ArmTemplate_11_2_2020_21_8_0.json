@@ -6,30 +6,6 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "pipelineSetupV1"
-		},
-		"AzureBlobStorageStage_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorageStage'"
-		},
-		"AzureDataLakeStorage_LinkedService_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage_LinkedService'"
-		},
-		"API_Data_Linked_Service_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "@{linkedService().ip_api_url}"
-		},
-		"AzureDataLakeStorage_LinkedService_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://demoadfgen2.dfs.core.windows.net"
-		},
-		"FtpServer_Linked_Service_properties_typeProperties_host": {
-			"type": "string",
-			"defaultValue": "ftp://192.168.0.105/"
-		},
-		"integrationRuntimeLogical_properties_typeProperties_linkedInfo_resourceId": {
-			"type": "string",
-			"defaultValue": "/subscriptions/2f74b086-1adb-4bdf-ab0d-c693816302a7/resourcegroups/azure-data-factory-demo/providers/Microsoft.DataFactory/factories/pipelineSetupV1/integrationruntimes/integrationRuntime-ftp"
 		}
 	},
 	"variables": {
@@ -76,8 +52,7 @@
 						"inputs": [
 							{
 								"referenceName": "Rest_API_Data",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						],
 						"outputs": [
@@ -107,82 +82,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Rest_API_Data')]",
 				"[concat(variables('factoryId'), '/datasets/API_Data_Sink')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pipeline_Copy_Blob_Data')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "copyActivity_Blob_Data",
-						"description": "This is copy activity to change source dataset type",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"wildcardFileName": "*"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings",
-									"copyBehavior": "PreserveHierarchy"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ""
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "DelimitedText_Blob_Source",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DelimitedTextSink",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DelimitedText_Blob_Source')]",
-				"[concat(variables('factoryId'), '/datasets/DelimitedTextSink')]"
 			]
 		},
 		{
@@ -239,8 +138,7 @@
 						"inputs": [
 							{
 								"referenceName": "DelimitedText_Blob_Source",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						],
 						"outputs": [
@@ -409,15 +307,13 @@
 						"inputs": [
 							{
 								"referenceName": "DelimitedText_FTP_Cource",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						],
 						"outputs": [
 							{
 								"referenceName": "DelimitedText_FTP_Sink",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						]
 					}
@@ -425,7 +321,6 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DelimitedText_FTP_Cource')]",
 				"[concat(variables('factoryId'), '/datasets/DelimitedText_FTP_Sink')]"
 			]
 		},
@@ -466,35 +361,7 @@
 				},
 				"schema": {}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageStage')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DelimitedTextSink')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorageStage",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"container": "destination-container"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageStage')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DelimitedText_AzureDataLake_Sink')]",
@@ -557,35 +424,7 @@
 				},
 				"schema": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageStage')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DelimitedText_FTP_Cource')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "FtpServer_Linked_Service",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "FtpServerLocation",
-						"folderPath": "resume_old"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/FtpServer_Linked_Service')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DelimitedText_FTP_Sink')]",
@@ -611,9 +450,7 @@
 				},
 				"schema": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageStage')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Rest_API_Data')]",
@@ -629,7 +466,6 @@
 				},
 				"annotations": [],
 				"type": "RestResource",
-				"typeProperties": {},
 				"schema": []
 			},
 			"dependsOn": [
@@ -650,22 +486,9 @@
 				"annotations": [],
 				"type": "RestService",
 				"typeProperties": {
-					"url": "[parameters('API_Data_Linked_Service_properties_typeProperties_url')]",
+					"url": "@{linkedService().ip_api_url}",
 					"enableServerCertificateValidation": false,
 					"authenticationType": "Anonymous"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureBlobStorageStage')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobStorage",
-				"typeProperties": {
-					"connectionString": "[parameters('AzureBlobStorageStage_connectionString')]"
 				}
 			},
 			"dependsOn": []
@@ -678,58 +501,10 @@
 				"annotations": [],
 				"type": "AzureBlobFS",
 				"typeProperties": {
-					"url": "[parameters('AzureDataLakeStorage_LinkedService_properties_typeProperties_url')]",
+					"url": "https://demoadfgen2.dfs.core.windows.net",
 					"accountKey": {
 						"type": "SecureString",
-						"value": "[parameters('AzureDataLakeStorage_LinkedService_accountKey')]"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/FtpServer_Linked_Service')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "FtpServer",
-				"typeProperties": {
-					"host": "[parameters('FtpServer_Linked_Service_properties_typeProperties_host')]",
-					"port": 21,
-					"enableSsl": false,
-					"enableServerCertificateValidation": false,
-					"authenticationType": "Anonymous"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntimeLogical",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeLogical')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/integrationRuntime-ftp')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "SelfHosted",
-				"typeProperties": {}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/integrationRuntimeLogical')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "SelfHosted",
-				"typeProperties": {
-					"linkedInfo": {
-						"resourceId": "[parameters('integrationRuntimeLogical_properties_typeProperties_linkedInfo_resourceId')]",
-						"authorizationType": "Rbac"
+						"value": "**********"
 					}
 				}
 			},

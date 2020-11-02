@@ -11,6 +11,18 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorageStage'"
 		},
+		"AzureDataLakeStorage_LinkedService_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage_LinkedService'"
+		},
+		"API_Data_Linked_Service_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "@{linkedService().ip_api_url}"
+		},
+		"AzureDataLakeStorage_LinkedService_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://demoadfgen2.dfs.core.windows.net"
+		},
 		"integrationRuntimeLogical_properties_typeProperties_linkedInfo_resourceId": {
 			"type": "string",
 			"defaultValue": "/subscriptions/2f74b086-1adb-4bdf-ab0d-c693816302a7/resourcegroups/azure-data-factory-demo/providers/Microsoft.DataFactory/factories/pipelineSetupV1/integrationruntimes/integrationRuntime-ftp"
@@ -25,6 +37,27 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/API_Data_Linked_Service')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"parameters": {
+					"ip_api_url": {
+						"type": "String",
+						"defaultValue": "http://ip-api.com/json/24.48.0.1"
+					}
+				},
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('API_Data_Linked_Service_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": false,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureBlobStorageStage')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -33,6 +66,23 @@
 				"type": "AzureBlobStorage",
 				"typeProperties": {
 					"connectionString": "[parameters('AzureBlobStorageStage_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorage_LinkedService')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('AzureDataLakeStorage_LinkedService_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('AzureDataLakeStorage_LinkedService_accountKey')]"
+					}
 				}
 			},
 			"dependsOn": []
@@ -63,6 +113,47 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/API_Data_Sink')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageStage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"api_pipeline_folder": {
+						"type": "string",
+						"defaultValue": "api_data_folder"
+					},
+					"api_pipeline_filename": {
+						"type": "string",
+						"defaultValue": "dummy.json"
+					}
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().api_pipeline_filename",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().api_pipeline_folder",
+							"type": "Expression"
+						},
+						"container": "destination-container"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageStage')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DelimitedTextSink')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -89,6 +180,43 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText_AzureDataLake_Sink')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage_LinkedService",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"sinkFolderPath": {
+						"type": "string",
+						"defaultValue": "stage_data_ADLGen2"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "microsoft-certified-azure-data-engineer-associate-skills-measured.pdf",
+						"folderPath": {
+							"value": "@dataset().sinkFolderPath",
+							"type": "Expression"
+						},
+						"fileSystem": "stage-container"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage_LinkedService')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DelimitedText_Blob_Source')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -102,6 +230,8 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
+						"fileName": "microsoft-certified-azure-data-engineer-associate-skills-measured.pdf",
+						"folderPath": "Azure-Certificates",
 						"container": "stage-container"
 					},
 					"columnDelimiter": ",",
@@ -128,7 +258,8 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "resume_old",
+						"fileName": "dummy.json",
+						"folderPath": "api_data",
 						"container": "destination-container"
 					},
 					"columnDelimiter": ",",
@@ -139,6 +270,27 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageStage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Rest_API_Data')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "API_Data_Linked_Service",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"ip_api_url": "http://ip-api.com/json/24.48.0.1"
+					}
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/API_Data_Linked_Service')]"
 			]
 		},
 		{
@@ -162,6 +314,79 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeLogical')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline_Copy_API_Data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data API",
+						"description": "This is a activity to copy data from api",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "Rest_API_Data",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "API_Data_Sink",
+								"type": "DatasetReference",
+								"parameters": {
+									"api_pipeline_folder": "api_data_folder",
+									"api_pipeline_filename": "dummy.json"
+								}
+							}
+						]
+					}
+				],
+				"parameters": {
+					"api_pipeline_folder": {
+						"type": "string",
+						"defaultValue": "api_data_folder"
+					},
+					"api_pipeline_filename": {
+						"type": "string",
+						"defaultValue": "dummy.json"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Rest_API_Data')]",
+				"[concat(variables('factoryId'), '/datasets/API_Data_Sink')]"
 			]
 		},
 		{
@@ -241,6 +466,173 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pipeline_Copy_Data_AzureDataLake')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data into Azure DataLake Gen2",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings",
+									"copyBehavior": "PreserveHierarchy"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ""
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DelimitedText_Blob_Source",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DelimitedText_AzureDataLake_Sink",
+								"type": "DatasetReference",
+								"parameters": {
+									"sinkFolderPath": "stage_data_ADLGen2"
+								}
+							}
+						]
+					},
+					{
+						"name": "Get Metadata Azure DataLake Gen2",
+						"type": "GetMetadata",
+						"dependsOn": [
+							{
+								"activity": "Copy data into Azure DataLake Gen2",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DelimitedText_AzureDataLake_Sink",
+								"type": "DatasetReference",
+								"parameters": {
+									"sinkFolderPath": "stage_data_ADLGen2"
+								}
+							},
+							"fieldList": [
+								"itemName",
+								"itemType",
+								"lastModified",
+								"exists"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					},
+					{
+						"name": "If Condition AzureDataLake",
+						"description": "This is a  conditional data flow based on different conditions.",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Get Metadata Azure DataLake Gen2",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(activity('Get Metadata Azure DataLake Gen2').output.itemType, 'Folder')",
+								"type": "Expression"
+							},
+							"ifFalseActivities": [
+								{
+									"name": "Wait_FalseActivity",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
+									}
+								}
+							],
+							"ifTrueActivities": [
+								{
+									"name": "wait_TrueActivity",
+									"description": "This is a wait activity to check true response ",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
+									}
+								}
+							]
+						}
+					}
+				],
+				"variables": {
+					"activityMetadata": {
+						"type": "String",
+						"defaultValue": "\"\""
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DelimitedText_Blob_Source')]",
+				"[concat(variables('factoryId'), '/datasets/DelimitedText_AzureDataLake_Sink')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DelimitedText_FTP_Cource')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -302,7 +694,7 @@
 								"type": "DelimitedTextSink",
 								"storeSettings": {
 									"type": "AzureBlobStorageWriteSettings",
-									"copyBehavior": "PreserveHierarchy"
+									"copyBehavior": "MergeFiles"
 								},
 								"formatSettings": {
 									"type": "DelimitedTextWriteSettings",

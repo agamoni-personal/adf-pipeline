@@ -8,6 +8,15 @@
 		"AzureBlobStorageStage_connectionString": {
 			"value": ""
 		},
+		"AzureDataLakeStorage_LinkedService_accountKey": {
+			"value": ""
+		},
+		"API_Data_Linked_Service_properties_typeProperties_url": {
+			"value": "@{linkedService().ip_api_url}"
+		},
+		"AzureDataLakeStorage_LinkedService_properties_typeProperties_url": {
+			"value": "https://demoadfgen2.dfs.core.windows.net"
+		},
 		"FtpServer_Linked_Service_properties_typeProperties_host": {
 			"value": "ftp://192.168.0.105/"
 		},
