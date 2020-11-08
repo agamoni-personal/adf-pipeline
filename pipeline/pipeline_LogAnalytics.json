@@ -24,7 +24,7 @@
 						"Content-Type": "application/json"
 					},
 					"body": {
-						"value": "{\n    \"tenentId\" : \"dd4149a3-da2c-4ee2-bb69-b00528959f08\",\n    \"contentType\" : \"application/x-www-form-urlencoded\",\n    \"grantType\" : \"client_credentials\",\n    \"clientId\" : \"94d71110-76b3-4078-ad22-3ef3f7b654d1\",\n    \"clientSecret\" : \"ZU0~3AHZtSUMuvdEt2Um._0Xwxa_rB16_d\",\n    \"resource\" : \"https://api.loganalytics.io\",\n    \"endPointUrl\" : \"https://login.microsoftonline.com/\",\n    \"workSpaceId\" : \"2f5d639a-25b6-44ac-8ee8-ec9f68fa95b5\",\n    \"logAnalyticsUrl\" : \"https://api.loganalytics.io/v1/workspaces/\",\n    \"logQuery\" : \"AzureActivity| where ActivityStatusValue == 'Succeeded' and TimeGenerated >= now() - 24h;\"\n}",
+						"value": "{\n    \"tenentId\" : @{pipeline().parameters.TenentId},\n    \"contentType\" : @{pipeline().parameters.ContentType},\n    \"grantType\" : @{pipeline().parameters.GrantType},\n    \"clientId\" : @{pipeline().parameters.ClientId},\n    \"clientSecret\" : @{pipeline().parameters.ClientSecret},\n    \"resource\" : @{pipeline().parameters.Resource},\n    \"endPointUrl\" : @{pipeline().parameters.EndPointUrl},\n    \"workSpaceId\" : @{pipeline().parameters.WorkSpaceId},\n    \"logAnalyticsUrl\" : @{pipeline().parameters.LogAnalyticsUrl},\n    \"logQuery\" : @{pipeline().parameters.LogQuery}\n}",
 						"type": "Expression"
 					}
 				},
