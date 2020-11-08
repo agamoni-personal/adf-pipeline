@@ -32,33 +32,6 @@
 					"referenceName": "AzureFunction_LinkedService",
 					"type": "LinkedServiceReference"
 				}
-			},
-			{
-				"name": "Azure Function To Process Data",
-				"type": "AzureFunctionActivity",
-				"dependsOn": [
-					{
-						"activity": "Azure Function to Get Log Analytics Data",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"method": "POST"
-				},
-				"linkedServiceName": {
-					"referenceName": "AzureFunction_LinkedService",
-					"type": "LinkedServiceReference"
-				}
 			}
 		],
 		"parameters": {
