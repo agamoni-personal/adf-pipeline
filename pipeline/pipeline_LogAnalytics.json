@@ -13,9 +13,59 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": []
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureFunction_LinkedService",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
+		"parameters": {
+			"FunctionName": {
+				"type": "string",
+				"defaultValue": "accees-to-logAnalytics"
+			},
+			"TenentId": {
+				"type": "string",
+				"defaultValue": "dd4149a3-da2c-4ee2-bb69-b00528959f08"
+			},
+			"ContentType": {
+				"type": "string",
+				"defaultValue": "application/x-www-form-urlencoded"
+			},
+			"GrantType": {
+				"type": "string",
+				"defaultValue": "client_credentials"
+			},
+			"ClientId": {
+				"type": "string",
+				"defaultValue": "94d71110-76b3-4078-ad22-3ef3f7b654d1"
+			},
+			"ClientSecret": {
+				"type": "string",
+				"defaultValue": "ZU0~3AHZtSUMuvdEt2Um._0Xwxa_rB16_d"
+			},
+			"Resource": {
+				"type": "string",
+				"defaultValue": "https://api.loganalytics.io"
+			},
+			"EndPointUrl": {
+				"type": "string",
+				"defaultValue": "https://login.microsoftonline.com/"
+			},
+			"WorkSpaceId": {
+				"type": "string",
+				"defaultValue": "2f5d639a-25b6-44ac-8ee8-ec9f68fa95b5"
+			},
+			"LogAnalyticsUrl": {
+				"type": "string",
+				"defaultValue": "https://api.loganalytics.io/v1/workspaces/"
+			},
+			"LogQuery": {
+				"type": "string",
+				"defaultValue": "AzureActivity| where ActivityStatusValue == 'Succeeded' and TimeGenerated >= now() - 24h;"
+			}
+		},
 		"annotations": []
 	}
 }
