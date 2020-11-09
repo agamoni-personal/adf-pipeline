@@ -115,7 +115,7 @@
 			},
 			"LogQuery": {
 				"type": "string",
-				"defaultValue": "AzureActivity| where ActivityStatusValue == 'Succeeded' and TimeGenerated >= now() - 24h;"
+				"defaultValue": "AzureActivity | where ActivityStatusValue == 'Succeeded' and TimeGenerated >= ago(2h);"
 			},
 			"PreProcessFunctionName": {
 				"type": "string",
