@@ -67,7 +67,7 @@
 					}
 				},
 				"linkedServiceName": {
-					"referenceName": "AzureFunction_LinkedService",
+					"referenceName": "AzureFunction_CovertJsonToCsv_LinkedService",
 					"type": "LinkedServiceReference"
 				}
 			}
