@@ -123,11 +123,11 @@
 			},
 			"ContainerName": {
 				"type": "string",
-				"defaultValue": "AzureActivity"
+				"defaultValue": "azureactivity"
 			},
 			"FolderName": {
 				"type": "string",
-				"defaultValue": "GeneralLog"
+				"defaultValue": "generallog"
 			},
 			"AccountName": {
 				"type": "string",
