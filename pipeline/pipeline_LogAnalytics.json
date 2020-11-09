@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Azure Function to Get Log Analytics Data",
+				"name": "Azure Function to Get AzureActivity Log",
 				"type": "AzureFunctionActivity",
 				"dependsOn": [],
 				"policy": {
@@ -25,6 +25,44 @@
 					},
 					"body": {
 						"value": "{\n    \"tenentId\" : \"@{pipeline().parameters.TenentId}\",\n    \"contentType\" : \"@{pipeline().parameters.ContentType}\",\n    \"grantType\" : \"@{pipeline().parameters.GrantType}\",\n    \"clientId\" : \"@{pipeline().parameters.ClientId}\",\n    \"clientSecret\" : \"@{pipeline().parameters.ClientSecret}\",\n    \"resource\" : \"@{pipeline().parameters.Resource}\",\n    \"endPointUrl\" : \"@{pipeline().parameters.EndPointUrl}\",\n    \"workSpaceId\" : \"@{pipeline().parameters.WorkSpaceId}\",\n    \"logAnalyticsUrl\" : \"@{pipeline().parameters.LogAnalyticsUrl}\",\n    \"logQuery\" : \"@{pipeline().parameters.LogQuery}\"\n}",
+						"type": "Expression"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureFunction_LinkedService",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Azure Function to store LogData in ADL",
+				"type": "AzureFunctionActivity",
+				"dependsOn": [
+					{
+						"activity": "Azure Function to Get AzureActivity Log",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"functionName": {
+						"value": "@pipeline().parameters.PreProcessFunctionName",
+						"type": "Expression"
+					},
+					"method": "POST",
+					"headers": {
+						"Content-Type": "application/json"
+					},
+					"body": {
+						"value": "{\n    \"jsonRequestData\" : \"@activity('Azure Function to Get AzureActivity Log').output.value\",\n    \"logType\" : \"AzureActivity\",\n    \"containerName\" : \"@{pipeline().parameters.ContainerName}\",\n    \"folderName\" : \"@{pipeline().parameters.FolderName}\",\n    \"accountName\" : \"@{pipeline().parameters.AccountName}\",\n    \"accountKey\" : \"@{pipeline().parameters.AccountKey}\"\n}",
 						"type": "Expression"
 					}
 				},
@@ -78,6 +116,26 @@
 			"LogQuery": {
 				"type": "string",
 				"defaultValue": "AzureActivity| where ActivityStatusValue == 'Succeeded' and TimeGenerated >= now() - 24h;"
+			},
+			"PreProcessFunctionName": {
+				"type": "string",
+				"defaultValue": "convert-json-to-csv"
+			},
+			"ContainerName": {
+				"type": "string",
+				"defaultValue": "AzureActivity"
+			},
+			"FolderName": {
+				"type": "string",
+				"defaultValue": "GeneralLog"
+			},
+			"AccountName": {
+				"type": "string",
+				"defaultValue": "123datalakegen2"
+			},
+			"AccountKey": {
+				"type": "string",
+				"defaultValue": "+hmWpzgVZ7H/IJVu0Uc74O/tKgx8OSf1Cx/VU3yrzNWxGMKlYq7u92/J9pXUeh+xzskBw07FXB+A2Sx0tSFD6g=="
 			}
 		},
 		"annotations": []
