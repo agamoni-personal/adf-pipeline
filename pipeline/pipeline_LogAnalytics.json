@@ -24,7 +24,7 @@
 						"Content-Type": "application/json"
 					},
 					"body": {
-						"value": "{\n    \"tenentId\" : \"@{pipeline().parameters.TenentId}\",\n    \"contentType\" : \"@{pipeline().parameters.ContentType}\",\n    \"grantType\" : \"@{pipeline().parameters.GrantType}\",\n    \"clientId\" : \"@{pipeline().parameters.ClientId}\",\n    \"clientSecret\" : \"@{pipeline().parameters.ClientSecret}\",\n    \"resource\" : \"@{pipeline().parameters.Resource}\",\n    \"endPointUrl\" : \"@{pipeline().parameters.EndPointUrl}\",\n    \"workSpaceId\" : \"@{pipeline().parameters.WorkSpaceId}\",\n    \"logAnalyticsUrl\" : \"@{pipeline().parameters.LogAnalyticsUrl}\",\n    \"logQuery\" : \"@{pipeline().parameters.LogQuery}\"\n}",
+						"value": "{\n    \"tenentId\" : \"@{pipeline().parameters.TenentId}\",\n    \"contentType\" : \"@{pipeline().parameters.ContentType}\",\n    \"grantType\" : \"@{pipeline().parameters.GrantType}\",\n    \"clientId\" : \"@{pipeline().parameters.ClientId}\",\n    \"clientSecret\" : \"@{pipeline().parameters.ClientSecret}\",\n    \"resource\" : \"@{pipeline().parameters.Resource}\",\n    \"endPointUrl\" : \"@{pipeline().parameters.EndPointUrl}\",\n    \"workSpaceId\" : \"@{pipeline().parameters.WorkSpaceId}\",\n    \"logQuery\" : \"@{pipeline().parameters.LogQuery}\"\n}",
 						"type": "Expression"
 					}
 				},
@@ -51,6 +51,37 @@
 						"value": "@and(equals(activity('Azure Function to Get AzureActivity Log').output.value.statusCode, 200), equals(activity('Azure Function to Get AzureActivity Log').output.value.message, 'Query data has been extracted successfully.'))",
 						"type": "Expression"
 					},
+					"ifFalseActivities": [
+						{
+							"name": "Azure Function to Log Errors",
+							"description": "This azure function helps to log the activity ",
+							"type": "AzureFunctionActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"functionName": "logging-data-retrival-process",
+								"method": "POST",
+								"headers": {
+									"Content-Type": "application/json"
+								},
+								"body": {
+									"value": "{\n   \"containerName\" : \"@{pipeline().parameters.LogContainerName}\",\n    \"accountName\" : \"@{pipeline().parameters.AccountName}\",\n    \"accountKey\" : \"@{pipeline().parameters.AccountKey}\",\n    \"message\" : \"@{activity('Azure Function to Get AzureActivity Log').output.message}\",\n    \"statusCode\" : \"@{activity('Azure Function to Get AzureActivity Log').output.statusCode}\",\n    \"pipelineName\" : \"@{pipeline().Pipeline}\",\n    \"pipelineRunId\" : \"@{pipeline().RunId}\"\n}",
+									"type": "Expression"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureFunction_Log_FileProcessing",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
 					"ifTrueActivities": [
 						{
 							"name": "Convert Json to Csv and store into ADL",
