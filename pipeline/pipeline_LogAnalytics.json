@@ -125,6 +125,10 @@
 								"method": "POST",
 								"headers": {
 									"Content-Type": "application/json"
+								},
+								"body": {
+									"value": "{\n   \"containerName\" : \"@{pipeline().parameters.LogContainerName}\",\n    \"accountName\" : \"@{pipeline().parameters.AccountName}\",\n    \"accountKey\" : \"@{pipeline().parameters.AccountKey}\",\n    \"message\" : \"@{activity('Convert Json to Csv and store into ADL').output.message}\",\n    \"statusCode\" : \"@{activity('Convert Json to Csv and store into ADL').output.statusCode}\",\n    \"pipelineName\" : \"@{pipeline().Pipeline}\",\n    \"pipelineRunId\" : \"@{pipeline().RunId}\"\n}",
+									"type": "Expression"
 								}
 							},
 							"linkedServiceName": {
