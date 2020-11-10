@@ -34,8 +34,9 @@
 				}
 			},
 			{
-				"name": "Azure Function to store LogData in ADL",
-				"type": "AzureFunctionActivity",
+				"name": "Query Data If Condition",
+				"description": "This activity check the response data",
+				"type": "IfCondition",
 				"dependsOn": [
 					{
 						"activity": "Azure Function to Get AzureActivity Log",
@@ -44,31 +45,62 @@
 						]
 					}
 				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"functionName": {
-						"value": "@pipeline().parameters.PreProcessFunctionName",
+					"expression": {
+						"value": "@and(equals(activity('Azure Function to Get AzureActivity Log').output.value.statusCode, 200), equals(activity('Azure Function to Get AzureActivity Log').output.value.message, 'Query data has been extracted successfully'))",
 						"type": "Expression"
 					},
-					"method": "POST",
-					"headers": {
-						"Content-Type": "application/json"
-					},
-					"body": {
-						"value": "{\n    \"jsonRequestData\" : @{activity('Azure Function to Get AzureActivity Log').output.value.data},\n    \"logType\" : \"AzureActivity\",\n    \"containerName\" : \"@{pipeline().parameters.ContainerName}\",\n    \"folderName\" : \"@{pipeline().parameters.FolderName}\",\n    \"accountName\" : \"@{pipeline().parameters.AccountName}\",\n    \"accountKey\" : \"@{pipeline().parameters.AccountKey}\"\n}",
-						"type": "Expression"
-					}
-				},
-				"linkedServiceName": {
-					"referenceName": "AzureFunction_CovertJsonToCsv_LinkedService",
-					"type": "LinkedServiceReference"
+					"ifFalseActivities": [
+						{
+							"name": "LogQuery Retrival Error",
+							"type": "AzureFunctionActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"functionName": "logging-data-retrival-process",
+								"method": "POST"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Convert Json to Csv and store into ADL",
+							"description": "This azure function activity is used to store data into csv format from and store into ADL gen2",
+							"type": "AzureFunctionActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"functionName": "convert-json-to-csv",
+								"method": "POST",
+								"headers": {
+									"Content-Type": "application/json"
+								},
+								"body": {
+									"value": "{\n    \"jsonRequestData\" : @{activity('Azure Function to Get AzureActivity Log').output.value.data},\n    \"logType\" : \"AzureActivity\",\n    \"containerName\" : \"@{pipeline().parameters.ContainerName}\",\n    \"folderName\" : \"@{pipeline().parameters.FolderName}\",\n    \"accountName\" : \"@{pipeline().parameters.AccountName}\",\n    \"accountKey\" : \"@{pipeline().parameters.AccountKey}\"\n}",
+									"type": "Expression"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureFunction_CovertJsonToCsv_LinkedService",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
 				}
 			}
 		],
