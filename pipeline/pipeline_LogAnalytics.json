@@ -48,7 +48,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(equals(activity('Azure Function to Get AzureActivity Log').output.value.statusCode, 200), equals(activity('Azure Function to Get AzureActivity Log').output.value.message, 'Query data has been extracted successfully'))",
+						"value": "@and(equals(activity('Azure Function to Get AzureActivity Log').output.value.statusCode, 200), equals(activity('Azure Function to Get AzureActivity Log').output.value.message, 'Query data has been extracted successfully.'))",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
