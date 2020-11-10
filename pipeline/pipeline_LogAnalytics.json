@@ -115,7 +115,7 @@
 			},
 			"LogQuery": {
 				"type": "string",
-				"defaultValue": "AzureActivity | where ActivityStatusValue == 'Succeeded' and TimeGenerated >= ago(2h);"
+				"defaultValue": "AzureActivity | where TimeGenerated >= ago(2h) | project OperationName, OperationNameValue, Level, ActivityStatus, ActivityStatusValue, ActivitySubstatus, ActivitySubstatusValue, ResourceGroup, SubscriptionId, CorrelationId, Caller, CallerIpAddress, Category, CategoryValue, EventSubmissionTimestamp, ResourceId, OperationId, ResourceProvider, ResourceProviderValue, Resource, EventDataId, TenantId, TimeGenerated, SourceSystem, Authorization_d,Claims,Claims_d,Properties_d,Hierarchy,Type,_ResourceId | order by TimeGenerated asc ;"
 			},
 			"PreProcessFunctionName": {
 				"type": "string",
