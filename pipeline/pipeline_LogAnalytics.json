@@ -72,7 +72,7 @@
 									"Content-Type": "application/json"
 								},
 								"body": {
-									"value": "{\n   \"containerName\" : \"@{pipeline().parameters.LogContainerName}\",\n    \"accountName\" : \"@{pipeline().parameters.AccountName}\",\n    \"accountKey\" : \"@{pipeline().parameters.AccountKey}\",\n    \"message\" : \"@{activity('Azure Function to Get AzureActivity Log').output.message}\",\n    \"statusCode\" : \"@{activity('Azure Function to Get AzureActivity Log').output.statusCode}\",\n    \"pipelineName\" : \"@{pipeline().Pipeline}\",\n    \"pipelineRunId\" : \"@{pipeline().RunId}\"\n}",
+									"value": "{\n   \"containerName\" : \"@{pipeline().parameters.LogContainerName}\",\n    \"accountName\" : \"@{pipeline().parameters.AccountName}\",\n    \"accountKey\" : \"@{pipeline().parameters.AccountKey}\",\n    \"message\" : \"@{activity('Azure Function to Get AzureActivity Log').output.value.message}\",\n    \"statusCode\" : \"@{activity('Azure Function to Get AzureActivity Log').output.value.statusCode}\",\n    \"pipelineName\" : \"@{pipeline().Pipeline}\",\n    \"pipelineRunId\" : \"@{pipeline().RunId}\"\n}",
 									"type": "Expression"
 								}
 							},
