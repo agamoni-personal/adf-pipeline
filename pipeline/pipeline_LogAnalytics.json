@@ -99,6 +99,38 @@
 								"referenceName": "AzureFunction_CovertJsonToCsv_LinkedService",
 								"type": "LinkedServiceReference"
 							}
+						},
+						{
+							"name": "Azure Function to Log activity",
+							"description": "This azure function helps to log the activity ",
+							"type": "AzureFunctionActivity",
+							"dependsOn": [
+								{
+									"activity": "Convert Json to Csv and store into ADL",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"functionName": "logging-data-retrival-process",
+								"method": "POST",
+								"headers": {
+									"Content-Type": "application/json"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureFunction_Log_FileProcessing",
+								"type": "LinkedServiceReference"
+							}
 						}
 					]
 				}
