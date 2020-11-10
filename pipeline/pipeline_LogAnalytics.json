@@ -200,6 +200,10 @@
 			"AccountKey": {
 				"type": "string",
 				"defaultValue": "+hmWpzgVZ7H/IJVu0Uc74O/tKgx8OSf1Cx/VU3yrzNWxGMKlYq7u92/J9pXUeh+xzskBw07FXB+A2Sx0tSFD6g=="
+			},
+			"LogContainerName": {
+				"type": "string",
+				"defaultValue": "logs"
 			}
 		},
 		"annotations": []
