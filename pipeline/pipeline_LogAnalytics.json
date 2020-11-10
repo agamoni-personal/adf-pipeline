@@ -62,7 +62,7 @@
 						"Content-Type": "application/json"
 					},
 					"body": {
-						"value": "{\n    \"jsonRequestData\" : \"@{string(activity('Azure Function to Get AzureActivity Log').output.value.data)}\",\n    \"logType\" : \"AzureActivity\",\n    \"containerName\" : \"@{pipeline().parameters.ContainerName}\",\n    \"folderName\" : \"@{pipeline().parameters.FolderName}\",\n    \"accountName\" : \"@{pipeline().parameters.AccountName}\",\n    \"accountKey\" : \"@{pipeline().parameters.AccountKey}\"\n}",
+						"value": "{\n    \"jsonRequestData\" : \"@{activity('Azure Function to Get AzureActivity Log').output.value.data}\",\n    \"logType\" : \"AzureActivity\",\n    \"containerName\" : \"@{pipeline().parameters.ContainerName}\",\n    \"folderName\" : \"@{pipeline().parameters.FolderName}\",\n    \"accountName\" : \"@{pipeline().parameters.AccountName}\",\n    \"accountKey\" : \"@{pipeline().parameters.AccountKey}\"\n}",
 						"type": "Expression"
 					}
 				},
