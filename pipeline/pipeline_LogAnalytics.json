@@ -51,25 +51,6 @@
 						"value": "@and(equals(activity('Azure Function to Get AzureActivity Log').output.value.statusCode, 200), equals(activity('Azure Function to Get AzureActivity Log').output.value.message, 'Query data has been extracted successfully'))",
 						"type": "Expression"
 					},
-					"ifFalseActivities": [
-						{
-							"name": "LogQuery Retrival Error",
-							"type": "AzureFunctionActivity",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"functionName": "logging-data-retrival-process",
-								"method": "POST"
-							}
-						}
-					],
 					"ifTrueActivities": [
 						{
 							"name": "Convert Json to Csv and store into ADL",
