@@ -171,8 +171,15 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"url": "https://login.microsoftonline.com/dd4149a3-da2c-4ee2-bb69-b00528959f08/oauth2/v2.0/authorize?response_type=code&client_id=94d71110-76b3-4078-ad22-3ef3f7b654d1&redirect_uri=http://localhost:7071/&scope=openid",
-					"method": "GET"
+					"url": "https://login.microsoftonline.com/dd4149a3-da2c-4ee2-bb69-b00528959f08/oauth2/token",
+					"method": "POST",
+					"headers": {
+						"Content-Type": "application/x-www-form-urlencoded"
+					},
+					"body": {
+						"value": "{\n  \"grant_type\" : \"@{pipeline().parameters.GrantType}\",\n   \"client_id\" : \"@{pipeline().parameters.ClientId}\",\n   \"client_secret\" : \"@{pipeline().parameters.ClientSecret}\",\n   \"resource\" : \"https://management.azure.com/\"\n}",
+						"type": "Expression"
+					}
 				}
 			}
 		],
