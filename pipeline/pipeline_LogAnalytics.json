@@ -177,7 +177,7 @@
 						"Content-Type": "application/x-www-form-urlencoded"
 					},
 					"body": {
-						"value": "@concat('grant_type=','{pipeline().parameters.GrantType}','&client_id=','{pipeline().parameters.ClientId}','&client_secret=','{pipeline().parameters.ClientSecret}','&resource=\"https://management.azure.com/\"')",
+						"value": "@concat('grant_type=','client_credentials','&client_id=','94d71110-76b3-4078-ad22-3ef3f7b654d1','&client_secret=','ZU0~3AHZtSUMuvdEt2Um._0Xwxa_rB16_d','&resource=\"https://management.azure.com/\"')",
 						"type": "Expression"
 					}
 				}
