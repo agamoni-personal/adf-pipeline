@@ -1,0 +1,12 @@
+{
+	"name": "OAuthCodeAPI",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "RestService_To_Access_OAuthCode",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	}
+}
