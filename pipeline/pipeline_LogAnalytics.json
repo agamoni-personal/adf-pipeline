@@ -30,7 +30,7 @@
 					"headers": {
 						"Content-Type": "application/json",
 						"Authorization": {
-							"value": "@activity('AccessCode').output.access_token",
+							"value": "@concat('Bearer ',activity('AccessCode').output.access_token)",
 							"type": "Expression"
 						}
 					},
