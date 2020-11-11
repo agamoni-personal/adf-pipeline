@@ -7,7 +7,7 @@
 				"type": "AzureFunctionActivity",
 				"dependsOn": [
 					{
-						"activity": "Copy data Log Analytics",
+						"activity": "AccessCode",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -159,8 +159,8 @@
 				}
 			},
 			{
-				"name": "Copy data Log Analytics",
-				"type": "Copy",
+				"name": "AccessCode",
+				"type": "WebActivity",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
@@ -171,26 +171,9 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "RestSource",
-						"httpRequestTimeout": "00:01:40",
-						"requestInterval": "00.00:00:00.010",
-						"requestMethod": "GET"
-					},
-					"enableStaging": false
-				},
-				"inputs": [
-					{
-						"referenceName": "OAuthCodeAPI",
-						"type": "DatasetReference",
-						"parameters": {
-							"tenentId": "dd4149a3-da2c-4ee2-bb69-b00528959f08",
-							"client_id": "94d71110-76b3-4078-ad22-3ef3f7b654d1",
-							"redirect_uri": "https://azureloganalyticsfunction.azurewebsites.net/",
-							"scope": "openid"
-						}
-					}
-				]
+					"url": "https://login.microsoftonline.com/dd4149a3-da2c-4ee2-bb69-b00528959f08/oauth2/v2.0/authorize?response_type=code&client_id=94d71110-76b3-4078-ad22-3ef3f7b654d1&redirect_uri=http://localhost:7071/&scope=openid",
+					"method": "GET"
+				}
 			}
 		],
 		"parameters": {
