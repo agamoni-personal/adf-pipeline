@@ -5,11 +5,29 @@
 			"referenceName": "RestService_To_Access_OAuthCode",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"tenentId": {
+				"type": "String",
+				"defaultValue": "dd4149a3-da2c-4ee2-bb69-b00528959f08"
+			},
+			"client_id": {
+				"type": "string",
+				"defaultValue": "94d71110-76b3-4078-ad22-3ef3f7b654d1"
+			},
+			"redirect_uri": {
+				"type": "string",
+				"defaultValue": "https://azureloganalyticsfunction.azurewebsites.net/"
+			},
+			"scope": {
+				"type": "string",
+				"defaultValue": "openid"
+			}
+		},
 		"annotations": [],
 		"type": "RestResource",
 		"typeProperties": {
 			"relativeUrl": {
-				"value": "@concat()",
+				"value": "@concat(dataset().tenentId, '/oauth2/v2.0/authorize?response_type=code&client_id=', dataset().client_id, '&redirect_uri=', dataset().redirect_uri, '&scope=openid')",
 				"type": "Expression"
 			}
 		},
