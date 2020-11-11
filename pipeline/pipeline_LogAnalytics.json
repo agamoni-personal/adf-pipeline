@@ -28,7 +28,11 @@
 					},
 					"method": "POST",
 					"headers": {
-						"Content-Type": "application/json"
+						"Content-Type": "application/json",
+						"Authorization": {
+							"value": "@activity('AccessCode').output.access_token",
+							"type": "Expression"
+						}
 					},
 					"body": {
 						"value": "{\n    \"tenentId\" : \"@{pipeline().parameters.TenentId}\",\n    \"contentType\" : \"@{pipeline().parameters.ContentType}\",\n    \"grantType\" : \"@{pipeline().parameters.GrantType}\",\n    \"clientId\" : \"@{pipeline().parameters.ClientId}\",\n    \"clientSecret\" : \"@{pipeline().parameters.ClientSecret}\",\n    \"resource\" : \"@{pipeline().parameters.Resource}\",\n    \"endPointUrl\" : \"@{pipeline().parameters.EndPointUrl}\",\n    \"workSpaceId\" : \"@{pipeline().parameters.WorkSpaceId}\",\n    \"logAnalyticsUrl\" : \"@{pipeline().parameters.LogAnalyticsUrl}\",\n    \"logQuery\" : \"@{pipeline().parameters.LogQuery}\"\n}",
