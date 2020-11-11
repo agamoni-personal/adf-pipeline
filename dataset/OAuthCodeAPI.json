@@ -7,6 +7,12 @@
 		},
 		"annotations": [],
 		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@concat()",
+				"type": "Expression"
+			}
+		},
 		"schema": []
 	}
 }
