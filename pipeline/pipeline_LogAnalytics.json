@@ -59,7 +59,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(equals(activity('Azure Function to Get AzureActivity Log').output.value.statusCode, 200), equals(activity('Azure Function to Get AzureActivity Log').output.value.message, 'Query data has been extracted successfully.'))",
+						"value": "@and(equals(activity('Azure Function to Get AzureActivity Log').output.StatusCode, 200), equals(activity('Azure Function to Get AzureActivity Log').output.Message, 'Query data has been extracted successfully.'))",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -83,7 +83,7 @@
 									"Content-Type": "application/json"
 								},
 								"body": {
-									"value": "{\n   \"containerName\" : \"@{pipeline().parameters.LogContainerName}\",\n    \"accountName\" : \"@{pipeline().parameters.AccountName}\",\n    \"accountKey\" : \"@{pipeline().parameters.AccountKey}\",\n    \"message\" : \"@{activity('Azure Function to Get AzureActivity Log').output.value.message}\",\n    \"statusCode\" : \"@{activity('Azure Function to Get AzureActivity Log').output.value.statusCode}\",\n    \"pipelineName\" : \"@{pipeline().Pipeline}\",\n    \"pipelineRunId\" : \"@{pipeline().RunId}\"\n}",
+									"value": "{\n   \"containerName\" : \"@{pipeline().parameters.LogContainerName}\",\n    \"accountName\" : \"@{pipeline().parameters.AccountName}\",\n    \"accountKey\" : \"@{pipeline().parameters.AccountKey}\",\n    \"message\" : \"@{activity('Azure Function to Get AzureActivity Log').output.Message}\",\n    \"statusCode\" : \"@{activity('Azure Function to Get AzureActivity Log').output.StatusCode}\",\n    \"pipelineName\" : \"@{pipeline().Pipeline}\",\n    \"pipelineRunId\" : \"@{pipeline().RunId}\"\n}",
 									"type": "Expression"
 								}
 							},
@@ -114,7 +114,7 @@
 									"Content-Type": "application/json"
 								},
 								"body": {
-									"value": "{\n    \"jsonRequestData\" : @{activity('Azure Function to Get AzureActivity Log').output.value.data},\n    \"logType\" : \"AzureActivity\",\n    \"containerName\" : \"@{pipeline().parameters.ContainerName}\",\n    \"folderName\" : \"@{pipeline().parameters.FolderName}\",\n    \"accountName\" : \"@{pipeline().parameters.AccountName}\",\n    \"accountKey\" : \"@{pipeline().parameters.AccountKey}\"\n}",
+									"value": "{\n    \"jsonRequestData\" : @{activity('Azure Function to Get AzureActivity Log').output.Data},\n    \"logType\" : \"AzureActivity\",\n    \"containerName\" : \"@{pipeline().parameters.ContainerName}\",\n    \"folderName\" : \"@{pipeline().parameters.FolderName}\",\n    \"accountName\" : \"@{pipeline().parameters.AccountName}\",\n    \"accountKey\" : \"@{pipeline().parameters.AccountKey}\"\n}",
 									"type": "Expression"
 								}
 							},
@@ -150,7 +150,7 @@
 									"Content-Type": "application/json"
 								},
 								"body": {
-									"value": "{\n   \"containerName\" : \"@{pipeline().parameters.LogContainerName}\",\n    \"accountName\" : \"@{pipeline().parameters.AccountName}\",\n    \"accountKey\" : \"@{pipeline().parameters.AccountKey}\",\n    \"message\" : \"@{activity('Convert Json to Csv and store into ADL').output.message}\",\n    \"statusCode\" : \"@{activity('Convert Json to Csv and store into ADL').output.statusCode}\",\n    \"pipelineName\" : \"@{pipeline().Pipeline}\",\n    \"pipelineRunId\" : \"@{pipeline().RunId}\"\n}",
+									"value": "{\n   \"containerName\" : \"@{pipeline().parameters.LogContainerName}\",\n    \"accountName\" : \"@{pipeline().parameters.AccountName}\",\n    \"accountKey\" : \"@{pipeline().parameters.AccountKey}\",\n    \"message\" : \"@{activity('Convert Json to Csv and store into ADL').output.Message}\",\n    \"statusCode\" : \"@{activity('Convert Json to Csv and store into ADL').output.StatusCode}\",\n    \"pipelineName\" : \"@{pipeline().Pipeline}\",\n    \"pipelineRunId\" : \"@{pipeline().RunId}\"\n}",
 									"type": "Expression"
 								}
 							},
