@@ -230,7 +230,7 @@
 			},
 			"LogQuery": {
 				"type": "string",
-				"defaultValue": "AzureActivity | where TimeGenerated >= ago(2h) | order by TimeGenerated asc;"
+				"defaultValue": "AzureDiagnostics | where ResourceProvider=='MICROSOFT.DOCUMENTDB' and Category=='DataPlaneRequests' and TimeGenerated >= ago(2h) | summarize count() by TimeGenerated"
 			},
 			"PreProcessFunctionName": {
 				"type": "string",
