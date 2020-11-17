@@ -15,6 +15,18 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage_LinkedService'"
 		},
+		"AzureFunction_CovertJsonToCsv_LinkedService_functionKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'functionKey' of 'AzureFunction_CovertJsonToCsv_LinkedService'"
+		},
+		"AzureFunction_LinkedService_functionKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'functionKey' of 'AzureFunction_LinkedService'"
+		},
+		"AzureFunction_Log_FileProcessing_functionKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'functionKey' of 'AzureFunction_Log_FileProcessing'"
+		},
 		"API_Data_Linked_Service_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "@{linkedService().ip_api_url}"
@@ -22,6 +34,22 @@
 		"AzureDataLakeStorage_LinkedService_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://demoadfgen2.dfs.core.windows.net"
+		},
+		"AzureFunction_CovertJsonToCsv_LinkedService_properties_typeProperties_functionAppUrl": {
+			"type": "string",
+			"defaultValue": "https://testpythoncode.azurewebsites.net"
+		},
+		"AzureFunction_LinkedService_properties_typeProperties_functionAppUrl": {
+			"type": "string",
+			"defaultValue": "https://testpythoncode.azurewebsites.net"
+		},
+		"AzureFunction_Log_FileProcessing_properties_typeProperties_functionAppUrl": {
+			"type": "string",
+			"defaultValue": "https://testpythoncode.azurewebsites.net"
+		},
+		"RestService_To_Access_OAuthCode_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://login.microsoftonline.com/"
 		},
 		"integrationRuntimeLogical_properties_typeProperties_linkedInfo_resourceId": {
 			"type": "string",
@@ -88,6 +116,73 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureFunction_CovertJsonToCsv_LinkedService')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureFunction",
+				"typeProperties": {
+					"functionAppUrl": "[parameters('AzureFunction_CovertJsonToCsv_LinkedService_properties_typeProperties_functionAppUrl')]",
+					"functionKey": {
+						"type": "SecureString",
+						"value": "[parameters('AzureFunction_CovertJsonToCsv_LinkedService_functionKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureFunction_LinkedService')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureFunction",
+				"typeProperties": {
+					"functionAppUrl": "[parameters('AzureFunction_LinkedService_properties_typeProperties_functionAppUrl')]",
+					"functionKey": {
+						"type": "SecureString",
+						"value": "[parameters('AzureFunction_LinkedService_functionKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureFunction_Log_FileProcessing')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "This azure function is used to keep the track of processed and unprocessed file.",
+				"annotations": [],
+				"type": "AzureFunction",
+				"typeProperties": {
+					"functionAppUrl": "[parameters('AzureFunction_Log_FileProcessing_properties_typeProperties_functionAppUrl')]",
+					"functionKey": {
+						"type": "SecureString",
+						"value": "[parameters('AzureFunction_Log_FileProcessing_functionKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RestService_To_Access_OAuthCode')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('RestService_To_Access_OAuthCode_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/integrationRuntime-ftp')]",
 			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
 			"apiVersion": "2018-06-01",
@@ -111,6 +206,275 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline_LogAnalytics')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Azure Function to Get AzureActivity Log",
+						"type": "AzureFunctionActivity",
+						"dependsOn": [
+							{
+								"activity": "AccessCode",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"functionName": {
+								"value": "@pipeline().parameters.FunctionName",
+								"type": "Expression"
+							},
+							"method": "POST",
+							"headers": {
+								"Content-Type": "application/json",
+								"Authorization": {
+									"value": "@concat('Bearer ',activity('AccessCode').output.access_token)",
+									"type": "Expression"
+								}
+							},
+							"body": {
+								"value": "{\n    \"tenentId\" : \"@{pipeline().parameters.TenentId}\",\n    \"contentType\" : \"@{pipeline().parameters.ContentType}\",\n    \"grantType\" : \"@{pipeline().parameters.GrantType}\",\n    \"clientId\" : \"@{pipeline().parameters.ClientId}\",\n    \"clientSecret\" : \"@{pipeline().parameters.ClientSecret}\",\n    \"resource\" : \"@{pipeline().parameters.Resource}\",\n    \"endPointUrl\" : \"@{pipeline().parameters.EndPointUrl}\",\n    \"workSpaceId\" : \"@{pipeline().parameters.WorkSpaceId}\",\n    \"logAnalyticsUrl\" : \"@{pipeline().parameters.LogAnalyticsUrl}\",\n    \"logQuery\" : \"@{pipeline().parameters.LogQuery}\"\n}",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureFunction_LinkedService",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Query Data If Condition",
+						"description": "This activity check the response data",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Azure Function to Get AzureActivity Log",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@and(equals(activity('Azure Function to Get AzureActivity Log').output.StatusCode, 200), equals(activity('Azure Function to Get AzureActivity Log').output.Message, 'Query data has been extracted successfully.'))",
+								"type": "Expression"
+							},
+							"ifFalseActivities": [
+								{
+									"name": "Azure Function to Log Errors",
+									"description": "This azure function helps to log the activity ",
+									"type": "AzureFunctionActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"functionName": "logging-data-retrival-process",
+										"method": "POST",
+										"headers": {
+											"Content-Type": "application/json"
+										},
+										"body": {
+											"value": "{\n   \"containerName\" : \"@{pipeline().parameters.LogContainerName}\",\n    \"accountName\" : \"@{pipeline().parameters.AccountName}\",\n    \"accountKey\" : \"@{pipeline().parameters.AccountKey}\",\n    \"message\" : \"@{activity('Azure Function to Get AzureActivity Log').output.Message}\",\n    \"statusCode\" : \"@{activity('Azure Function to Get AzureActivity Log').output.StatusCode}\",\n    \"pipelineName\" : \"@{pipeline().Pipeline}\",\n    \"pipelineRunId\" : \"@{pipeline().RunId}\"\n}",
+											"type": "Expression"
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "AzureFunction_Log_FileProcessing",
+										"type": "LinkedServiceReference"
+									}
+								}
+							],
+							"ifTrueActivities": [
+								{
+									"name": "Convert Json to Csv and store into ADL",
+									"description": "This azure function activity is used to store data into csv format from and store into ADL gen2",
+									"type": "AzureFunctionActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"functionName": "convert-json-to-csv",
+										"method": "POST",
+										"headers": {
+											"Content-Type": "application/json"
+										},
+										"body": {
+											"value": "{\n    \"jsonRequestData\" : @{activity('Azure Function to Get AzureActivity Log').output.Data},\n    \"logType\" : \"AzureActivity\",\n    \"containerName\" : \"@{pipeline().parameters.ContainerName}\",\n    \"folderName\" : \"@{pipeline().parameters.FolderName}\",\n    \"accountName\" : \"@{pipeline().parameters.AccountName}\",\n    \"accountKey\" : \"@{pipeline().parameters.AccountKey}\"\n}",
+											"type": "Expression"
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "AzureFunction_CovertJsonToCsv_LinkedService",
+										"type": "LinkedServiceReference"
+									}
+								},
+								{
+									"name": "Azure Function to Log activity",
+									"description": "This azure function helps to log the activity ",
+									"type": "AzureFunctionActivity",
+									"dependsOn": [
+										{
+											"activity": "Convert Json to Csv and store into ADL",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"functionName": "logging-data-retrival-process",
+										"method": "POST",
+										"headers": {
+											"Content-Type": "application/json"
+										},
+										"body": {
+											"value": "{\n   \"containerName\" : \"@{pipeline().parameters.LogContainerName}\",\n    \"accountName\" : \"@{pipeline().parameters.AccountName}\",\n    \"accountKey\" : \"@{pipeline().parameters.AccountKey}\",\n    \"message\" : \"@{activity('Convert Json to Csv and store into ADL').output.Message}\",\n    \"statusCode\" : \"@{activity('Convert Json to Csv and store into ADL').output.StatusCode}\",\n    \"pipelineName\" : \"@{pipeline().Pipeline}\",\n    \"pipelineRunId\" : \"@{pipeline().RunId}\"\n}",
+											"type": "Expression"
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "AzureFunction_Log_FileProcessing",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "AccessCode",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://login.microsoftonline.com/dd4149a3-da2c-4ee2-bb69-b00528959f08/oauth2/token",
+							"method": "POST",
+							"headers": {
+								"Content-Type": "application/x-www-form-urlencoded"
+							},
+							"body": {
+								"value": "@concat('grant_type=','client_credentials','&client_id=','94d71110-76b3-4078-ad22-3ef3f7b654d1','&client_secret=','ZU0~3AHZtSUMuvdEt2Um._0Xwxa_rB16_d','&resource=https://management.azure.com/')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"parameters": {
+					"FunctionName": {
+						"type": "string",
+						"defaultValue": "accees-to-logAnalytics"
+					},
+					"TenentId": {
+						"type": "string",
+						"defaultValue": "dd4149a3-da2c-4ee2-bb69-b00528959f08"
+					},
+					"ContentType": {
+						"type": "string",
+						"defaultValue": "application/x-www-form-urlencoded"
+					},
+					"GrantType": {
+						"type": "string",
+						"defaultValue": "client_credentials"
+					},
+					"ClientId": {
+						"type": "string",
+						"defaultValue": "94d71110-76b3-4078-ad22-3ef3f7b654d1"
+					},
+					"ClientSecret": {
+						"type": "string",
+						"defaultValue": "ZU0~3AHZtSUMuvdEt2Um._0Xwxa_rB16_d"
+					},
+					"Resource": {
+						"type": "string",
+						"defaultValue": "https://api.loganalytics.io"
+					},
+					"EndPointUrl": {
+						"type": "string",
+						"defaultValue": "https://login.microsoftonline.com/"
+					},
+					"WorkSpaceId": {
+						"type": "string",
+						"defaultValue": "2f5d639a-25b6-44ac-8ee8-ec9f68fa95b5"
+					},
+					"LogAnalyticsUrl": {
+						"type": "string",
+						"defaultValue": "https://api.loganalytics.io/v1/workspaces/"
+					},
+					"LogQuery": {
+						"type": "string",
+						"defaultValue": "AzureActivity | where TimeGenerated >= ago(2h) | order by TimeGenerated asc;"
+					},
+					"PreProcessFunctionName": {
+						"type": "string",
+						"defaultValue": "convert-json-to-csv"
+					},
+					"ContainerName": {
+						"type": "string",
+						"defaultValue": "azureactivity"
+					},
+					"FolderName": {
+						"type": "string",
+						"defaultValue": "generallog"
+					},
+					"AccountName": {
+						"type": "string",
+						"defaultValue": "123datalakegen2"
+					},
+					"AccountKey": {
+						"type": "string",
+						"defaultValue": "+hmWpzgVZ7H/IJVu0Uc74O/tKgx8OSf1Cx/VU3yrzNWxGMKlYq7u92/J9pXUeh+xzskBw07FXB+A2Sx0tSFD6g=="
+					},
+					"LogContainerName": {
+						"type": "string",
+						"defaultValue": "logs"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureFunction_LinkedService')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureFunction_Log_FileProcessing')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureFunction_CovertJsonToCsv_LinkedService')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/API_Data_Sink')]",
@@ -270,6 +634,47 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageStage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OAuthCodeAPI')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "RestService_To_Access_OAuthCode",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"tenentId": {
+						"type": "String",
+						"defaultValue": "dd4149a3-da2c-4ee2-bb69-b00528959f08"
+					},
+					"client_id": {
+						"type": "string",
+						"defaultValue": "94d71110-76b3-4078-ad22-3ef3f7b654d1"
+					},
+					"redirect_uri": {
+						"type": "string",
+						"defaultValue": "https://azureloganalyticsfunction.azurewebsites.net/"
+					},
+					"scope": {
+						"type": "string",
+						"defaultValue": "openid"
+					}
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": {
+						"value": "@concat(dataset().tenentId, '/oauth2/v2.0/authorize?response_type=code&client_id=', dataset().client_id, '&redirect_uri=', dataset().redirect_uri, '&scope=openid')",
+						"type": "Expression"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/RestService_To_Access_OAuthCode')]"
 			]
 		},
 		{
@@ -463,276 +868,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/DelimitedText_Blob_Source')]",
 				"[concat(variables('factoryId'), '/datasets/DelimitedTextSink')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pipeline_Copy_Data_AzureDataLake')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy data into Azure DataLake Gen2",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings",
-									"copyBehavior": "PreserveHierarchy"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ""
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "DelimitedText_Blob_Source",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DelimitedText_AzureDataLake_Sink",
-								"type": "DatasetReference",
-								"parameters": {
-									"sinkFolderPath": "stage_data_ADLGen2"
-								}
-							}
-						]
-					},
-					{
-						"name": "Get Metadata Azure DataLake Gen2",
-						"type": "GetMetadata",
-						"dependsOn": [
-							{
-								"activity": "Copy data into Azure DataLake Gen2",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "DelimitedText_AzureDataLake_Sink",
-								"type": "DatasetReference",
-								"parameters": {
-									"sinkFolderPath": "stage_data_ADLGen2"
-								}
-							},
-							"fieldList": [
-								"itemName",
-								"itemType",
-								"lastModified",
-								"exists"
-							],
-							"storeSettings": {
-								"type": "AzureBlobFSReadSettings",
-								"recursive": true
-							},
-							"formatSettings": {
-								"type": "DelimitedTextReadSettings"
-							}
-						}
-					},
-					{
-						"name": "If Condition AzureDataLake",
-						"description": "This is a  conditional data flow based on different conditions.",
-						"type": "IfCondition",
-						"dependsOn": [
-							{
-								"activity": "Get Metadata Azure DataLake Gen2",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@equals(activity('Get Metadata Azure DataLake Gen2').output.itemType, 'Folder')",
-								"type": "Expression"
-							},
-							"ifFalseActivities": [
-								{
-									"name": "Wait_FalseActivity",
-									"type": "Wait",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"waitTimeInSeconds": 1
-									}
-								}
-							],
-							"ifTrueActivities": [
-								{
-									"name": "wait_TrueActivity",
-									"description": "This is a wait activity to check true response ",
-									"type": "Wait",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"waitTimeInSeconds": 1
-									}
-								}
-							]
-						}
-					}
-				],
-				"variables": {
-					"activityMetadata": {
-						"type": "String",
-						"defaultValue": "\"\""
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DelimitedText_Blob_Source')]",
-				"[concat(variables('factoryId'), '/datasets/DelimitedText_AzureDataLake_Sink')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DelimitedText_FTP_Cource')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "FtpServer_Linked_Service",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "FtpServerLocation",
-						"folderPath": "resume_old"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/FtpServer_Linked_Service')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pipeline_Copy_FTP_Data')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "This is a pipeline to copy data from ftp folder",
-				"activities": [
-					{
-						"name": "Copy data from FTP",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "FtpReadSettings",
-									"recursive": true,
-									"wildcardFileName": "*",
-									"useBinaryTransfer": true
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings",
-									"copyBehavior": "MergeFiles"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ""
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "DelimitedText_FTP_Cource",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DelimitedText_FTP_Sink",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DelimitedText_FTP_Cource')]",
-				"[concat(variables('factoryId'), '/datasets/DelimitedText_FTP_Sink')]"
 			]
 		}
 	]

@@ -11,17 +11,89 @@
 		"AzureDataLakeStorage_LinkedService_accountKey": {
 			"value": ""
 		},
+		"AzureFunction_CovertJsonToCsv_LinkedService_functionKey": {
+			"value": ""
+		},
+		"AzureFunction_LinkedService_functionKey": {
+			"value": ""
+		},
+		"AzureFunction_Log_FileProcessing_functionKey": {
+			"value": ""
+		},
 		"API_Data_Linked_Service_properties_typeProperties_url": {
 			"value": "@{linkedService().ip_api_url}"
 		},
 		"AzureDataLakeStorage_LinkedService_properties_typeProperties_url": {
 			"value": "https://demoadfgen2.dfs.core.windows.net"
 		},
+		"AzureFunction_CovertJsonToCsv_LinkedService_properties_typeProperties_functionAppUrl": {
+			"value": "https://testpythoncode.azurewebsites.net"
+		},
+		"AzureFunction_LinkedService_properties_typeProperties_functionAppUrl": {
+			"value": "https://testpythoncode.azurewebsites.net"
+		},
+		"AzureFunction_Log_FileProcessing_properties_typeProperties_functionAppUrl": {
+			"value": "https://testpythoncode.azurewebsites.net"
+		},
 		"FtpServer_Linked_Service_properties_typeProperties_host": {
 			"value": "ftp://192.168.0.105/"
 		},
+		"RestService_To_Access_OAuthCode_properties_typeProperties_url": {
+			"value": "https://login.microsoftonline.com/"
+		},
 		"integrationRuntimeLogical_properties_typeProperties_linkedInfo_resourceId": {
 			"value": "/subscriptions/2f74b086-1adb-4bdf-ab0d-c693816302a7/resourcegroups/azure-data-factory-demo/providers/Microsoft.DataFactory/factories/pipelineSetupV1/integrationruntimes/integrationRuntime-ftp"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_FunctionName": {
+			"value": "accees-to-logAnalytics"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_TenentId": {
+			"value": "dd4149a3-da2c-4ee2-bb69-b00528959f08"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ContentType": {
+			"value": "application/x-www-form-urlencoded"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_GrantType": {
+			"value": "client_credentials"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ClientId": {
+			"value": "94d71110-76b3-4078-ad22-3ef3f7b654d1"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ClientSecret": {
+			"value": "ZU0~3AHZtSUMuvdEt2Um._0Xwxa_rB16_d"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_Resource": {
+			"value": "https://api.loganalytics.io"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_EndPointUrl": {
+			"value": "https://login.microsoftonline.com/"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_WorkSpaceId": {
+			"value": "2f5d639a-25b6-44ac-8ee8-ec9f68fa95b5"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_LogAnalyticsUrl": {
+			"value": "https://api.loganalytics.io/v1/workspaces/"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_LogQuery": {
+			"value": "AzureActivity | where TimeGenerated >= ago(2h) | order by TimeGenerated asc;"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_PreProcessFunctionName": {
+			"value": "convert-json-to-csv"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ContainerName": {
+			"value": "azureactivity"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_FolderName": {
+			"value": "generallog"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_AccountName": {
+			"value": "123datalakegen2"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_AccountKey": {
+			"value": "+hmWpzgVZ7H/IJVu0Uc74O/tKgx8OSf1Cx/VU3yrzNWxGMKlYq7u92/J9pXUeh+xzskBw07FXB+A2Sx0tSFD6g=="
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_LogContainerName": {
+			"value": "logs"
 		},
 		"containerUri": {
 			"value": ""

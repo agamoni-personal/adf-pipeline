@@ -15,6 +15,18 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage_LinkedService'"
 		},
+		"AzureFunction_CovertJsonToCsv_LinkedService_functionKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'functionKey' of 'AzureFunction_CovertJsonToCsv_LinkedService'"
+		},
+		"AzureFunction_LinkedService_functionKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'functionKey' of 'AzureFunction_LinkedService'"
+		},
+		"AzureFunction_Log_FileProcessing_functionKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'functionKey' of 'AzureFunction_Log_FileProcessing'"
+		},
 		"API_Data_Linked_Service_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "@{linkedService().ip_api_url}"
@@ -23,13 +35,97 @@
 			"type": "string",
 			"defaultValue": "https://demoadfgen2.dfs.core.windows.net"
 		},
+		"AzureFunction_CovertJsonToCsv_LinkedService_properties_typeProperties_functionAppUrl": {
+			"type": "string",
+			"defaultValue": "https://testpythoncode.azurewebsites.net"
+		},
+		"AzureFunction_LinkedService_properties_typeProperties_functionAppUrl": {
+			"type": "string",
+			"defaultValue": "https://testpythoncode.azurewebsites.net"
+		},
+		"AzureFunction_Log_FileProcessing_properties_typeProperties_functionAppUrl": {
+			"type": "string",
+			"defaultValue": "https://testpythoncode.azurewebsites.net"
+		},
 		"FtpServer_Linked_Service_properties_typeProperties_host": {
 			"type": "string",
 			"defaultValue": "ftp://192.168.0.105/"
 		},
+		"RestService_To_Access_OAuthCode_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://login.microsoftonline.com/"
+		},
 		"integrationRuntimeLogical_properties_typeProperties_linkedInfo_resourceId": {
 			"type": "string",
 			"defaultValue": "/subscriptions/2f74b086-1adb-4bdf-ab0d-c693816302a7/resourcegroups/azure-data-factory-demo/providers/Microsoft.DataFactory/factories/pipelineSetupV1/integrationruntimes/integrationRuntime-ftp"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_FunctionName": {
+			"type": "string",
+			"defaultValue": "accees-to-logAnalytics"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_TenentId": {
+			"type": "string",
+			"defaultValue": "dd4149a3-da2c-4ee2-bb69-b00528959f08"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ContentType": {
+			"type": "string",
+			"defaultValue": "application/x-www-form-urlencoded"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_GrantType": {
+			"type": "string",
+			"defaultValue": "client_credentials"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ClientId": {
+			"type": "string",
+			"defaultValue": "94d71110-76b3-4078-ad22-3ef3f7b654d1"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ClientSecret": {
+			"type": "string",
+			"defaultValue": "ZU0~3AHZtSUMuvdEt2Um._0Xwxa_rB16_d"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_Resource": {
+			"type": "string",
+			"defaultValue": "https://api.loganalytics.io"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_EndPointUrl": {
+			"type": "string",
+			"defaultValue": "https://login.microsoftonline.com/"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_WorkSpaceId": {
+			"type": "string",
+			"defaultValue": "2f5d639a-25b6-44ac-8ee8-ec9f68fa95b5"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_LogAnalyticsUrl": {
+			"type": "string",
+			"defaultValue": "https://api.loganalytics.io/v1/workspaces/"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_LogQuery": {
+			"type": "string",
+			"defaultValue": "AzureActivity | where TimeGenerated >= ago(2h) | order by TimeGenerated asc;"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_PreProcessFunctionName": {
+			"type": "string",
+			"defaultValue": "convert-json-to-csv"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ContainerName": {
+			"type": "string",
+			"defaultValue": "azureactivity"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_FolderName": {
+			"type": "string",
+			"defaultValue": "generallog"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_AccountName": {
+			"type": "string",
+			"defaultValue": "123datalakegen2"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_AccountKey": {
+			"type": "string",
+			"defaultValue": "+hmWpzgVZ7H/IJVu0Uc74O/tKgx8OSf1Cx/VU3yrzNWxGMKlYq7u92/J9pXUeh+xzskBw07FXB+A2Sx0tSFD6g=="
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_LogContainerName": {
+			"type": "string",
+			"defaultValue": "logs"
 		},
 		"containerUri": {
 			"type": "string",
@@ -64,11 +160,32 @@
 					"AzureDataLakeStorage_LinkedService_accountKey": {
 						"value": "[parameters('AzureDataLakeStorage_LinkedService_accountKey')]"
 					},
+					"AzureFunction_CovertJsonToCsv_LinkedService_functionKey": {
+						"value": "[parameters('AzureFunction_CovertJsonToCsv_LinkedService_functionKey')]"
+					},
+					"AzureFunction_LinkedService_functionKey": {
+						"value": "[parameters('AzureFunction_LinkedService_functionKey')]"
+					},
+					"AzureFunction_Log_FileProcessing_functionKey": {
+						"value": "[parameters('AzureFunction_Log_FileProcessing_functionKey')]"
+					},
 					"API_Data_Linked_Service_properties_typeProperties_url": {
 						"value": "[parameters('API_Data_Linked_Service_properties_typeProperties_url')]"
 					},
 					"AzureDataLakeStorage_LinkedService_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage_LinkedService_properties_typeProperties_url')]"
+					},
+					"AzureFunction_CovertJsonToCsv_LinkedService_properties_typeProperties_functionAppUrl": {
+						"value": "[parameters('AzureFunction_CovertJsonToCsv_LinkedService_properties_typeProperties_functionAppUrl')]"
+					},
+					"AzureFunction_LinkedService_properties_typeProperties_functionAppUrl": {
+						"value": "[parameters('AzureFunction_LinkedService_properties_typeProperties_functionAppUrl')]"
+					},
+					"AzureFunction_Log_FileProcessing_properties_typeProperties_functionAppUrl": {
+						"value": "[parameters('AzureFunction_Log_FileProcessing_properties_typeProperties_functionAppUrl')]"
+					},
+					"RestService_To_Access_OAuthCode_properties_typeProperties_url": {
+						"value": "[parameters('RestService_To_Access_OAuthCode_properties_typeProperties_url')]"
 					},
 					"integrationRuntimeLogical_properties_typeProperties_linkedInfo_resourceId": {
 						"value": "[parameters('integrationRuntimeLogical_properties_typeProperties_linkedInfo_resourceId')]"
@@ -79,6 +196,77 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "pipelineSetupV1_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_FunctionName": {
+						"value": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_FunctionName')]"
+					},
+					"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_TenentId": {
+						"value": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_TenentId')]"
+					},
+					"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ContentType": {
+						"value": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ContentType')]"
+					},
+					"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_GrantType": {
+						"value": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_GrantType')]"
+					},
+					"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ClientId": {
+						"value": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ClientId')]"
+					},
+					"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ClientSecret": {
+						"value": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ClientSecret')]"
+					},
+					"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_Resource": {
+						"value": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_Resource')]"
+					},
+					"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_EndPointUrl": {
+						"value": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_EndPointUrl')]"
+					},
+					"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_WorkSpaceId": {
+						"value": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_WorkSpaceId')]"
+					},
+					"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_LogAnalyticsUrl": {
+						"value": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_LogAnalyticsUrl')]"
+					},
+					"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_LogQuery": {
+						"value": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_LogQuery')]"
+					},
+					"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_PreProcessFunctionName": {
+						"value": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_PreProcessFunctionName')]"
+					},
+					"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ContainerName": {
+						"value": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ContainerName')]"
+					},
+					"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_FolderName": {
+						"value": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_FolderName')]"
+					},
+					"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_AccountName": {
+						"value": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_AccountName')]"
+					},
+					"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_AccountKey": {
+						"value": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_AccountKey')]"
+					},
+					"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_LogContainerName": {
+						"value": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_LogContainerName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'pipelineSetupV1_ArmTemplate_0')]"
+			]
 		}
 	]
 }

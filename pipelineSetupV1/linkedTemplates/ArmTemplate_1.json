@@ -1,0 +1,395 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "pipelineSetupV1"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_FunctionName": {
+			"type": "string",
+			"defaultValue": "accees-to-logAnalytics"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_TenentId": {
+			"type": "string",
+			"defaultValue": "dd4149a3-da2c-4ee2-bb69-b00528959f08"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ContentType": {
+			"type": "string",
+			"defaultValue": "application/x-www-form-urlencoded"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_GrantType": {
+			"type": "string",
+			"defaultValue": "client_credentials"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ClientId": {
+			"type": "string",
+			"defaultValue": "94d71110-76b3-4078-ad22-3ef3f7b654d1"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ClientSecret": {
+			"type": "string",
+			"defaultValue": "ZU0~3AHZtSUMuvdEt2Um._0Xwxa_rB16_d"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_Resource": {
+			"type": "string",
+			"defaultValue": "https://api.loganalytics.io"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_EndPointUrl": {
+			"type": "string",
+			"defaultValue": "https://login.microsoftonline.com/"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_WorkSpaceId": {
+			"type": "string",
+			"defaultValue": "2f5d639a-25b6-44ac-8ee8-ec9f68fa95b5"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_LogAnalyticsUrl": {
+			"type": "string",
+			"defaultValue": "https://api.loganalytics.io/v1/workspaces/"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_LogQuery": {
+			"type": "string",
+			"defaultValue": "AzureActivity | where TimeGenerated >= ago(2h) | order by TimeGenerated asc;"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_PreProcessFunctionName": {
+			"type": "string",
+			"defaultValue": "convert-json-to-csv"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ContainerName": {
+			"type": "string",
+			"defaultValue": "azureactivity"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_FolderName": {
+			"type": "string",
+			"defaultValue": "generallog"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_AccountName": {
+			"type": "string",
+			"defaultValue": "123datalakegen2"
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_AccountKey": {
+			"type": "string",
+			"defaultValue": "+hmWpzgVZ7H/IJVu0Uc74O/tKgx8OSf1Cx/VU3yrzNWxGMKlYq7u92/J9pXUeh+xzskBw07FXB+A2Sx0tSFD6g=="
+		},
+		"Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_LogContainerName": {
+			"type": "string",
+			"defaultValue": "logs"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline_Copy_Data_AzureDataLake')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data into Azure DataLake Gen2",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings",
+									"copyBehavior": "PreserveHierarchy"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ""
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DelimitedText_Blob_Source",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DelimitedText_AzureDataLake_Sink",
+								"type": "DatasetReference",
+								"parameters": {
+									"sinkFolderPath": "stage_data_ADLGen2"
+								}
+							}
+						]
+					},
+					{
+						"name": "Get Metadata Azure DataLake Gen2",
+						"type": "GetMetadata",
+						"dependsOn": [
+							{
+								"activity": "Copy data into Azure DataLake Gen2",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DelimitedText_AzureDataLake_Sink",
+								"type": "DatasetReference",
+								"parameters": {
+									"sinkFolderPath": "stage_data_ADLGen2"
+								}
+							},
+							"fieldList": [
+								"itemName",
+								"itemType",
+								"lastModified",
+								"exists"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					},
+					{
+						"name": "If Condition AzureDataLake",
+						"description": "This is a  conditional data flow based on different conditions.",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Get Metadata Azure DataLake Gen2",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(activity('Get Metadata Azure DataLake Gen2').output.itemType, 'Folder')",
+								"type": "Expression"
+							},
+							"ifFalseActivities": [
+								{
+									"name": "Wait_FalseActivity",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
+									}
+								}
+							],
+							"ifTrueActivities": [
+								{
+									"name": "wait_TrueActivity",
+									"description": "This is a wait activity to check true response ",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
+									}
+								}
+							]
+						}
+					}
+				],
+				"variables": {
+					"activityMetadata": {
+						"type": "String",
+						"defaultValue": "\"\""
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText_FTP_Cource')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FtpServer_Linked_Service",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "FtpServerLocation",
+						"folderPath": "resume_old"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Pipeline_Trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "pipeline_LogAnalytics",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"FunctionName": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_FunctionName')]",
+							"TenentId": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_TenentId')]",
+							"ContentType": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ContentType')]",
+							"GrantType": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_GrantType')]",
+							"ClientId": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ClientId')]",
+							"ClientSecret": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ClientSecret')]",
+							"Resource": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_Resource')]",
+							"EndPointUrl": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_EndPointUrl')]",
+							"WorkSpaceId": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_WorkSpaceId')]",
+							"LogAnalyticsUrl": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_LogAnalyticsUrl')]",
+							"LogQuery": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_LogQuery')]",
+							"PreProcessFunctionName": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_PreProcessFunctionName')]",
+							"ContainerName": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_ContainerName')]",
+							"FolderName": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_FolderName')]",
+							"AccountName": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_AccountName')]",
+							"AccountKey": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_AccountKey')]",
+							"LogContainerName": "[parameters('Pipeline_Trigger_properties_pipeline_LogAnalytics_parameters_LogContainerName')]"
+						}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Hour",
+						"interval": 2,
+						"startTime": "2020-11-17T14:23:00",
+						"endTime": "2020-11-18T14:23:00",
+						"timeZone": "Eastern Standard Time"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline_Copy_FTP_Data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "This is a pipeline to copy data from ftp folder",
+				"activities": [
+					{
+						"name": "Copy data from FTP",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "FtpReadSettings",
+									"recursive": true,
+									"wildcardFileName": "*",
+									"useBinaryTransfer": true
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings",
+									"copyBehavior": "MergeFiles"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ""
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DelimitedText_FTP_Cource",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DelimitedText_FTP_Sink",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DelimitedText_FTP_Cource')]"
+			]
+		}
+	]
+}
