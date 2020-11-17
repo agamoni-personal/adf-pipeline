@@ -1,0 +1,44 @@
+{
+	"name": "Pipeline_Trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pipeline_LogAnalytics",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"FunctionName": "accees-to-logAnalytics",
+					"TenentId": "dd4149a3-da2c-4ee2-bb69-b00528959f08",
+					"ContentType": "application/x-www-form-urlencoded",
+					"GrantType": "client_credentials",
+					"ClientId": "94d71110-76b3-4078-ad22-3ef3f7b654d1",
+					"ClientSecret": "ZU0~3AHZtSUMuvdEt2Um._0Xwxa_rB16_d",
+					"Resource": "https://api.loganalytics.io",
+					"EndPointUrl": "https://login.microsoftonline.com/",
+					"WorkSpaceId": "2f5d639a-25b6-44ac-8ee8-ec9f68fa95b5",
+					"LogAnalyticsUrl": "https://api.loganalytics.io/v1/workspaces/",
+					"LogQuery": "AzureActivity | where TimeGenerated >= ago(2h) | order by TimeGenerated asc;",
+					"PreProcessFunctionName": "convert-json-to-csv",
+					"ContainerName": "azureactivity",
+					"FolderName": "generallog",
+					"AccountName": "123datalakegen2",
+					"AccountKey": "+hmWpzgVZ7H/IJVu0Uc74O/tKgx8OSf1Cx/VU3yrzNWxGMKlYq7u92/J9pXUeh+xzskBw07FXB+A2Sx0tSFD6g==",
+					"LogContainerName": "logs"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 2,
+				"startTime": "2020-11-17T14:23:00",
+				"endTime": "2020-11-18T14:23:00",
+				"timeZone": "Eastern Standard Time"
+			}
+		}
+	}
+}
