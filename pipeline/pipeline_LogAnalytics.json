@@ -230,7 +230,7 @@
 			},
 			"LogQuery": {
 				"type": "string",
-				"defaultValue": "AzureActivity | where TimeGenerated <= ago(72h)"
+				"defaultValue": "AzureActivity | where TimeGenerated >= ago(2h) | order by TimeGenerated asc;"
 			},
 			"PreProcessFunctionName": {
 				"type": "string",
