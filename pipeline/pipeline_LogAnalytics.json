@@ -185,6 +185,51 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "Incremental data loading into destination",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Query Data If Condition",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"modifiedDatetimeStart": {
+								"value": "@trigger().scheduledTime",
+								"type": "Expression"
+							},
+							"wildcardFileName": "*",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "DelimitedText_LogAnalytics_Source",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"parameters": {
