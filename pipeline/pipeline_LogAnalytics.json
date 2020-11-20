@@ -211,8 +211,14 @@
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
-							"modifiedDatetimeStart": "2020-11-20T00:00:00.000Z",
-							"modifiedDatetimeEnd": "2020-11-20T00:00:00.000Z",
+							"modifiedDatetimeStart": {
+								"value": "@convertToUtc(pipeline().TriggerTime, 'India Standard Time', 'yyyy-MM-ddTHH:mm:ss:fffffffK')",
+								"type": "Expression"
+							},
+							"modifiedDatetimeEnd": {
+								"value": "@addhours(convertToUtc(pipeline().TriggerTime, 'India Standard Time', 'yyyy-MM-ddTHH:mm:ss:fffffffK'), 2)",
+								"type": "Expression"
+							},
 							"wildcardFileName": "*"
 						},
 						"formatSettings": {
