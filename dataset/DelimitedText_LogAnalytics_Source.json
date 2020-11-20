@@ -21,7 +21,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"folderPath": {
-					"value": "@concat(dataset().FolderName, formatDateTime(pipeline().TriggerTime,'MM/dd/yyyy'))",
+					"value": "@concat(dataset().FolderName, '/' ,formatDateTime(pipeline().TriggerTime,'MM/dd/yyyy'))",
 					"type": "Expression"
 				},
 				"fileSystem": {
