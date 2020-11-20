@@ -211,10 +211,6 @@
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
-							"modifiedDatetimeStart": {
-								"value": "@adddays(pipeline().TriggerTime, -1)",
-								"type": "Expression"
-							},
 							"modifiedDatetimeEnd": {
 								"value": "@pipeline().TriggerTime",
 								"type": "Expression"
