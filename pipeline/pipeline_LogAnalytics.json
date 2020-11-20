@@ -187,16 +187,9 @@
 				}
 			},
 			{
-				"name": "Lookup_ADL_Gen2_Data",
-				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "Query Data If Condition",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"name": "Copy LogAnalytics Data",
+				"type": "Copy",
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -210,18 +203,50 @@
 						"type": "DelimitedTextSource",
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"wildcardFileName": "*"
+							"recursive": true
 						},
 						"formatSettings": {
 							"type": "DelimitedTextReadSettings"
 						}
 					},
-					"dataset": {
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings",
+							"copyBehavior": "PreserveHierarchy"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".csv"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
 						"referenceName": "DelimitedText_LogAnalytics_Source",
+						"type": "DatasetReference",
+						"parameters": {
+							"ContainerName": "azureactivity",
+							"FolderName": "generallog"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DelimitedText_LogAnalytics_Sink",
 						"type": "DatasetReference"
 					}
-				}
+				]
 			}
 		],
 		"parameters": {
