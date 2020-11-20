@@ -212,11 +212,11 @@
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
 							"modifiedDatetimeStart": {
-								"value": "@formatDateTime(pipeline().TriggerTime,'yyyy-MM-ddTHH:mm:ss:fffffffK')",
+								"value": "@formatDateTime(pipeline().TriggerTime,'yyyy-MM-ddTHH:mm:ssK')",
 								"type": "Expression"
 							},
 							"modifiedDatetimeEnd": {
-								"value": "@formatDateTime(addhours(pipeline().TriggerTime, 2),'yyyy-MM-ddTHH:mm:ss:fffffffK')",
+								"value": "@formatDateTime(addhours(pipeline().TriggerTime, 2),'yyyy-MM-ddTHH:mm:ssK')",
 								"type": "Expression"
 							},
 							"wildcardFileName": "*"
