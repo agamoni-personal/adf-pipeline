@@ -212,11 +212,11 @@
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
 							"modifiedDatetimeStart": {
-								"value": "@convertToUtc(pipeline().TriggerTime, 'India Standard Time', 'yyyy-MM-ddTHH:mm:ss:fffffffK')",
+								"value": "@formatDateTime(pipeline().TriggerTime,'yyyy-MM-ddTHH:mm:ss:fffffffK')",
 								"type": "Expression"
 							},
 							"modifiedDatetimeEnd": {
-								"value": "@addhours(convertToUtc(pipeline().TriggerTime, 'India Standard Time', 'yyyy-MM-ddTHH:mm:ss:fffffffK'), 2)",
+								"value": "@formatDateTime(addhours(pipeline().TriggerTime, 2),'yyyy-MM-ddTHH:mm:ss:fffffffK')",
 								"type": "Expression"
 							},
 							"wildcardFileName": "*"
