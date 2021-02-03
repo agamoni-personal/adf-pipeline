@@ -15,28 +15,36 @@
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
+			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
 		"schema": [
 			{
+				"name": "OrderDate",
 				"type": "String"
 			},
 			{
+				"name": "Region",
 				"type": "String"
 			},
 			{
+				"name": "Rep",
 				"type": "String"
 			},
 			{
+				"name": "Item",
 				"type": "String"
 			},
 			{
+				"name": "Units",
 				"type": "String"
 			},
 			{
+				"name": "Unit Cost",
 				"type": "String"
 			},
 			{
+				"name": "Total",
 				"type": "String"
 			}
 		]

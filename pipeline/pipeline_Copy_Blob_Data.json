@@ -20,28 +20,115 @@
 						"type": "DelimitedTextSource",
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
-							"recursive": true,
-							"wildcardFileName": "*"
+							"recursive": true
 						},
 						"formatSettings": {
 							"type": "DelimitedTextReadSettings"
 						}
 					},
 					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "AzureBlobStorageWriteSettings",
-							"copyBehavior": "PreserveHierarchy"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ""
-						}
+						"type": "AzureSqlSink"
 					},
 					"enableStaging": false,
 					"translator": {
 						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "OrderDate",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "OrderDate",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								}
+							},
+							{
+								"source": {
+									"name": "Region",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Region",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Rep",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Rep",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Item",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Item",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Units",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Units",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "Unit Cost",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Unit Cost",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "Total",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Total",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 18
+								}
+							},
+							{
+								"sink": {
+									"name": "Id",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							}
+						],
 						"typeConversion": true,
 						"typeConversionSettings": {
 							"allowDataTruncation": true,
@@ -57,7 +144,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "DelimitedTextSink",
+						"referenceName": "AzureSqlTable1",
 						"type": "DatasetReference"
 					}
 				]
