@@ -120,13 +120,6 @@
 									"scale": 2,
 									"precision": 18
 								}
-							},
-							{
-								"sink": {
-									"name": "Id",
-									"type": "Int32",
-									"physicalType": "int"
-								}
 							}
 						],
 						"typeConversion": true,
